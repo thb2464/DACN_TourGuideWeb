@@ -7,32 +7,32 @@ import './Newsletter.css';
 const localizedTexts = {
   placeholders: {
     vi: 'Nhập email của bạn',
-    en: 'Enter your email',
+    en: 'Nhập email của bạn',
     zh: '输入您的电子邮件',
   },
   submitting: {
     vi: 'Đang gửi...',
-    en: 'Submitting...',
+    en: 'Đang gửi...',
     zh: '提交中...',
   },
   successMessages: {
     vi: 'Cảm ơn bạn đã đăng ký!',
-    en: 'Thank you for subscribing!',
+    en: 'Cảm ơn bạn đã đăng ký!',
     zh: '感谢您的订阅！',
   },
   errorMessages: {
     vi: 'Đã xảy ra lỗi. Vui lòng thử lại.',
-    en: 'An error occurred. Please try again.',
+    en: 'Đã xảy ra lỗi. Vui lòng thử lại.',
     zh: '发生错误。请再试一次。',
   },
 };
 
 // SVG icon for the button (no changes needed)
 const SendIcon = () => (
-  <svg 
-    className="newsletter-icon" 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
+  <svg
+    className="newsletter-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
     fill="currentColor"
   >
     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -46,7 +46,7 @@ const Newsletter = () => {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [email, setEmail] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState('idle'); // 'idle', 'submitting', 'success', 'error'
   const [submissionMessage, setSubmissionMessage] = useState('');
@@ -55,15 +55,15 @@ const Newsletter = () => {
   useEffect(() => {
     const fetchContent = async () => {
       if (!currentLanguage) return;
-      
+
       setLoading(true);
       try {
         const localeQuery = `locale=${currentLanguage.code}`;
         const apiUrl = `${config.STRAPI_URL}${config.API_ENDPOINTS.LAYOUT_NEWSLETTER}?${localeQuery}`;
-        
+
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-        
+
         const json = await response.json();
         if (json.data) {
           setContent({
@@ -122,7 +122,7 @@ const Newsletter = () => {
       setSubmissionMessage(localizedTexts.errorMessages[currentLanguage.code]);
     }
   };
-  
+
   // --- 5. Determine current localized text ---
   const placeholderText = localizedTexts.placeholders[currentLanguage.code] || localizedTexts.placeholders.vi;
   const submittingText = localizedTexts.submitting[currentLanguage.code] || localizedTexts.submitting.vi;
@@ -133,17 +133,17 @@ const Newsletter = () => {
   }
 
   if (error) {
-     return (
-       <section className="newsletter-section">
-         <div className="newsletter-container">
-           <h2 className="newsletter-title">Đăng ký để nhận tư vấn từ chuyên gia</h2>
-           <form className="newsletter-form">
-             <input type="email" className="newsletter-input" placeholder="Email" disabled />
-             <button type="button" className="newsletter-button" disabled>Đăng ký <SendIcon /></button>
-           </form>
-         </div>
-       </section>
-     );
+    return (
+      <section className="newsletter-section">
+        <div className="newsletter-container">
+          <h2 className="newsletter-title">Đăng ký để nhận tư vấn từ chuyên gia</h2>
+          <form className="newsletter-form">
+            <input type="email" className="newsletter-input" placeholder="Email" disabled />
+            <button type="button" className="newsletter-button" disabled>Đăng ký <SendIcon /></button>
+          </form>
+        </div>
+      </section>
+    );
   }
 
   // --- 7. Render the dynamic component ---
@@ -161,8 +161,8 @@ const Newsletter = () => {
             required // Makes the field required
             disabled={submissionStatus === 'submitting'}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="newsletter-button"
             disabled={submissionStatus === 'submitting'}
           >

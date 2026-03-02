@@ -13,12 +13,13 @@ const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const getInitialLanguage = () => {
+    const defaultLanguage = languages.find(lang => lang.code === 'en') || languages[1];
     const savedLanguageCode = sessionStorage.getItem('preferredLanguage');
     if (savedLanguageCode) {
       const savedLanguage = languages.find(lang => lang.code === savedLanguageCode);
-      return savedLanguage || languages[0];
+      return savedLanguage || defaultLanguage;
     }
-    return languages[0];
+    return defaultLanguage;
   };
 
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage);
