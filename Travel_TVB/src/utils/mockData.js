@@ -1,6 +1,6 @@
 // src/utils/mockData.js
 
-const getImg = (seed) => `https://picsum.photos/seed/${seed}/800/600`;
+const getImg = (seed) => `https://picsum.photos/seed/picsum/200/300`;
 
 const mockData = {
     '/api/hero-slider': {

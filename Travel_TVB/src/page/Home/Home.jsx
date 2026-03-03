@@ -48,10 +48,10 @@ const Home = () => {
         <Diagram />
       </AnimateOnScroll>
 
-      {/* 5. MainService (Scroll component 4) - NOW fromBottom */}
+      {/* 5. MainService (Scroll component 4) - NOW fromBottom 
       <AnimateOnScroll direction="fromBottom" delay={0.3}>
         <MainService />
-      </AnimateOnScroll>
+      </AnimateOnScroll>*/}
 
       {/* 6. Portfolio (Scroll component 5) - NOW fromBottom */}
       <AnimateOnScroll direction="fromBottom" delay={0.3}>
