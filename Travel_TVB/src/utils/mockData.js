@@ -105,17 +105,10 @@ const mockData = {
             Team_highlight: "The Team",
             Team_title: "Meet Our Local Guides",
             Team_leader_subtible: "Management Team",
-            Director_Subtitle: "Board of Directors",
-            Team_expert_subtitle: "Travel Experts",
             Leader: [
                 { Leader_name: "Nguyen Van A", Leader_postition: "CEO", Leader_email: "ceo@traveltvb.vn", Leader_image: { url: getImg('guide1') }, Leader_descriptions: "20 years of experience" }
             ],
-            Director: [
-                { Director_Name: "Le Thi C", Director_Position: "Director", Director_Email: "dir@traveltvb.vn", Director_Image: { url: getImg('guide3') }, Director_Descriptions: "Strategic planning" }
-            ],
-            Expert: [
-                { Expert_name: "Tran Thi B", Expert_position: "Tour Guide", Expert_email: "guide@traveltvb.vn", Expert_image: { url: getImg('guide2') }, Expert_descriptions: "Local specialist" }
-            ]
+
         }
     },
     '/api/about-core-value': {

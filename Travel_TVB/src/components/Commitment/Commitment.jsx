@@ -43,7 +43,7 @@ const useCommitmentData = () => {
         const apiUrl = `${config.STRAPI_URL}${config.API_ENDPOINTS.COMMITMENT}?populate=Image&locale=${currentLanguage.code}`;
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        
+
         const result = await response.json();
         if (!result.data) throw new Error('No commitment data found in API response.');
 
@@ -69,38 +69,38 @@ const isExternalLink = (url) => {
 };
 
 const CommitmentView = ({ data }) => {
-    // ... (no changes in this component)
-    return (
-        <section className="commitment-section">
-            <div className="commitment-container">
-                <div className="commitment-content">
-                    <span className="commitment-pre-title">{data.preTitle}</span>
-                    <h2 className="commitment-title">{data.title}</h2>
-                    {data.description.map((paragraph, index) => (
-                        <p key={index} className="commitment-description">{paragraph}</p>
-                    ))}
-                    {data.buttonPath && data.buttonPath !== '#' ? (
-                        <a 
-                            href={data.buttonPath}
-                            className="commitment-button"
-                            target={isExternalLink(data.buttonPath) ? '_blank' : '_self'}
-                            rel={isExternalLink(data.buttonPath) ? 'noopener noreferrer' : undefined}
-                        >
-                            {data.buttonText}
-                            <div className="btn-arrow">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                            </div>
-                        </a>
-                    ) : (
-                        <button className="commitment-button" disabled>{data.buttonText}<span className="arrow-icon">→</span></button>
-                    )}
-                </div>
-                <div className="commitment-image-wrapper">
-                    <img src={data.image.src} alt={data.image.alt} />
-                </div>
-            </div>
-        </section>
-    );
+  // ... (no changes in this component)
+  return (
+    <section className="commitment-section">
+      <div className="commitment-container">
+        <div className="commitment-content">
+          <span className="commitment-pre-title">{data.preTitle}</span>
+          <h2 className="commitment-title">{data.title}</h2>
+          {data.description.map((paragraph, index) => (
+            <p key={index} className="commitment-description">{paragraph}</p>
+          ))}
+          {data.buttonPath && data.buttonPath !== '#' ? (
+            <a
+              href={data.buttonPath}
+              className="commitment-button"
+              target={isExternalLink(data.buttonPath) ? '_blank' : '_self'}
+              rel={isExternalLink(data.buttonPath) ? 'noopener noreferrer' : undefined}
+            >
+              {data.buttonText}
+              <div className="btn-arrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </div>
+            </a>
+          ) : (
+            <button className="commitment-button" disabled>{data.buttonText}<span className="arrow-icon">→</span></button>
+          )}
+        </div>
+        <div className="commitment-image-wrapper">
+          <img src={data.image.src} alt={data.image.alt} />
+        </div>
+      </div>
+    </section>
+  );
 };
 
 // --- Main Container Component (no changes needed) ---

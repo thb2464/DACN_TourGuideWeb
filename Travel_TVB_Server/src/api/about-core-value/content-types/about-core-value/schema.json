@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "home_commitments",
+  "collectionName": "about_core_values",
   "info": {
-    "singularName": "home-commitment",
-    "pluralName": "home-commitments",
-    "displayName": "Home-Commitment"
+    "singularName": "about-core-value",
+    "pluralName": "about-core-values",
+    "displayName": "About-CoreValue"
   },
   "options": {
     "draftAndPublish": true
@@ -15,7 +15,7 @@
     }
   },
   "attributes": {
-    "PreTitle": {
+    "Highlight": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -31,23 +31,7 @@
         }
       }
     },
-    "Descriptions": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "buttonText": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "Image": {
+    "Featured_Image": {
       "type": "media",
       "pluginOptions": {
         "i18n": {
@@ -62,13 +46,41 @@
         "audios"
       ]
     },
-    "buttonPath": {
+    "StackedCard": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "card.stacked-card",
+      "repeatable": true
+    },
+    "CtaCardTitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       }
+    },
+    "CtaCardDescriptions": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "Cta_button": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "button.cta-button",
+      "repeatable": false
     }
   }
 }

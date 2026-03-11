@@ -33,6 +33,20 @@ export interface ButtonNavigationButtons extends Struct.ComponentSchema {
   };
 }
 
+export interface ButtonSocialLink extends Struct.ComponentSchema {
+  collectionName: 'components_button_social_links';
+  info: {
+    displayName: 'Social_Link';
+  };
+  attributes: {
+    Social_Link_Name: Schema.Attribute.String;
+    Social_Logo: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    Url: Schema.Attribute.String;
+  };
+}
+
 export interface ButtonTermsAndServices extends Struct.ComponentSchema {
   collectionName: 'components_button_terms_and_services';
   info: {
@@ -41,6 +55,66 @@ export interface ButtonTermsAndServices extends Struct.ComponentSchema {
   attributes: {
     path: Schema.Attribute.String;
     text: Schema.Attribute.String;
+  };
+}
+
+export interface CardStackedCard extends Struct.ComponentSchema {
+  collectionName: 'components_card_stacked_cards';
+  info: {
+    displayName: 'StackedCard';
+  };
+  attributes: {
+    CardTitle: Schema.Attribute.String;
+    Descriptions: Schema.Attribute.String;
+  };
+}
+
+export interface MembersDirector extends Struct.ComponentSchema {
+  collectionName: 'components_members_directors';
+  info: {
+    displayName: 'Director';
+  };
+  attributes: {
+    Director_Descriptions: Schema.Attribute.Text;
+    Director_Email: Schema.Attribute.Email;
+    Director_Image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    Director_Name: Schema.Attribute.String;
+    Director_Position: Schema.Attribute.String;
+  };
+}
+
+export interface MembersExpert extends Struct.ComponentSchema {
+  collectionName: 'components_members_experts';
+  info: {
+    displayName: 'Expert';
+  };
+  attributes: {
+    Expert_descriptions: Schema.Attribute.Text;
+    Expert_email: Schema.Attribute.Email;
+    Expert_image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    Expert_name: Schema.Attribute.String;
+    Expert_position: Schema.Attribute.String;
+  };
+}
+
+export interface MembersLeader extends Struct.ComponentSchema {
+  collectionName: 'components_members_leaders';
+  info: {
+    displayName: 'Leader';
+  };
+  attributes: {
+    Leader_descriptions: Schema.Attribute.Text;
+    Leader_email: Schema.Attribute.Email;
+    Leader_image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    Leader_name: Schema.Attribute.String;
+    Leader_postition: Schema.Attribute.String;
   };
 }
 
@@ -91,6 +165,17 @@ export interface SlidesPartner extends Struct.ComponentSchema {
   };
 }
 
+export interface SlidesQuestion extends Struct.ComponentSchema {
+  collectionName: 'components_slides_questions';
+  info: {
+    displayName: 'Question';
+  };
+  attributes: {
+    Answer: Schema.Attribute.Blocks;
+    Question: Schema.Attribute.String;
+  };
+}
+
 export interface SlidesSlide extends Struct.ComponentSchema {
   collectionName: 'components_slides_slides';
   info: {
@@ -120,6 +205,18 @@ export interface SlidesStatisticSlide extends Struct.ComponentSchema {
   };
 }
 
+export interface SlidesTimelineEvents extends Struct.ComponentSchema {
+  collectionName: 'components_slides_timeline_events';
+  info: {
+    displayName: 'TimelineEvents';
+  };
+  attributes: {
+    cardDescription: Schema.Attribute.Text;
+    cardTitle: Schema.Attribute.String;
+    date: Schema.Attribute.String;
+  };
+}
+
 export interface SlidesYear extends Struct.ComponentSchema {
   collectionName: 'components_slides_years';
   info: {
@@ -142,13 +239,20 @@ declare module '@strapi/strapi' {
       'button.cta-button': ButtonCtaButton;
       'button.nav-button': ButtonNavButton;
       'button.navigation-buttons': ButtonNavigationButtons;
+      'button.social-link': ButtonSocialLink;
       'button.terms-and-services': ButtonTermsAndServices;
+      'card.stacked-card': CardStackedCard;
+      'members.director': MembersDirector;
+      'members.expert': MembersExpert;
+      'members.leader': MembersLeader;
       'menu-item.contact-item': MenuItemContactItem;
       'menu-item.footer-menu1-item': MenuItemFooterMenu1Item;
       'menu-item.footer-menu2-item': MenuItemFooterMenu2Item;
       'slides.partner': SlidesPartner;
+      'slides.question': SlidesQuestion;
       'slides.slide': SlidesSlide;
       'slides.statistic-slide': SlidesStatisticSlide;
+      'slides.timeline-events': SlidesTimelineEvents;
       'slides.year': SlidesYear;
     }
   }

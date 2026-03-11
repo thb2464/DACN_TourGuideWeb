@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "home_commitments",
+  "collectionName": "about_teams",
   "info": {
-    "singularName": "home-commitment",
-    "pluralName": "home-commitments",
-    "displayName": "Home-Commitment"
+    "singularName": "about-team",
+    "pluralName": "about-teams",
+    "displayName": "About-Team"
   },
   "options": {
     "draftAndPublish": true
@@ -15,7 +15,7 @@
     }
   },
   "attributes": {
-    "PreTitle": {
+    "Team_highlight": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -23,7 +23,7 @@
         }
       }
     },
-    "Title": {
+    "Team_title": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -31,15 +31,7 @@
         }
       }
     },
-    "Descriptions": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "buttonText": {
+    "Team_leader_subtible": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -47,22 +39,45 @@
         }
       }
     },
-    "Image": {
-      "type": "media",
+    "Team_expert_subtitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "Leader": {
+      "type": "component",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       },
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "component": "members.leader",
+      "repeatable": true
     },
-    "buttonPath": {
+    "Expert": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "members.expert",
+      "repeatable": true
+    },
+    "Director": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "members.director",
+      "repeatable": true
+    },
+    "Director_Subtitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {

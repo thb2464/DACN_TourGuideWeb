@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "home_commitments",
+  "collectionName": "news_heroes",
   "info": {
-    "singularName": "home-commitment",
-    "pluralName": "home-commitments",
-    "displayName": "Home-Commitment"
+    "singularName": "news-hero",
+    "pluralName": "news-heroes",
+    "displayName": "News Hero"
   },
   "options": {
     "draftAndPublish": true
@@ -15,7 +15,7 @@
     }
   },
   "attributes": {
-    "PreTitle": {
+    "News_MainTitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -23,7 +23,7 @@
         }
       }
     },
-    "Title": {
+    "News_subTitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -31,15 +31,7 @@
         }
       }
     },
-    "Descriptions": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "buttonText": {
+    "NewsletterLabel": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -47,28 +39,28 @@
         }
       }
     },
-    "Image": {
-      "type": "media",
+    "followUsText": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "Social_Link": {
+      "type": "component",
       "pluginOptions": {
         "i18n": {
           "localized": true
         }
       },
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "component": "button.social-link",
+      "repeatable": true
     },
-    "buttonPath": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+    "Featured_New": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::single-post.single-post"
     }
   }
 }

@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "home_commitments",
+  "collectionName": "community_heroes",
   "info": {
-    "singularName": "home-commitment",
-    "pluralName": "home-commitments",
-    "displayName": "Home-Commitment"
+    "singularName": "community-hero",
+    "pluralName": "community-heroes",
+    "displayName": "Community Hero"
   },
   "options": {
     "draftAndPublish": true
@@ -15,7 +15,7 @@
     }
   },
   "attributes": {
-    "PreTitle": {
+    "Community_MainTitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -23,7 +23,7 @@
         }
       }
     },
-    "Title": {
+    "Community_SubTitle": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -31,15 +31,7 @@
         }
       }
     },
-    "Descriptions": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "buttonText": {
+    "Community_NewsletterText": {
       "type": "string",
       "pluginOptions": {
         "i18n": {
@@ -47,7 +39,25 @@
         }
       }
     },
-    "Image": {
+    "followUsText": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "Social_Link": {
+      "type": "component",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "button.social-link",
+      "repeatable": true
+    },
+    "Community_FeaturedImage": {
       "type": "media",
       "pluginOptions": {
         "i18n": {
@@ -61,14 +71,6 @@
         "videos",
         "audios"
       ]
-    },
-    "buttonPath": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
     }
   }
 }
