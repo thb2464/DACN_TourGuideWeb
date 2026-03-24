@@ -40,6 +40,11 @@ const config = {
     // Tour endpoints
     TOURS: '/api/tours',
     TOUR_CATEGORIES: '/api/tour-categories',
+
+    // Booking endpoints
+    BOOKINGS: '/api/bookings',
+    BOOKING_CREATE_PAYMENT: '/api/bookings/create-payment-url',
+    BOOKING_MY_BOOKINGS: '/api/bookings/my-bookings',
   }
 };
 

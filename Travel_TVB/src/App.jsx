@@ -31,6 +31,8 @@ import Register from './page/Register/Register.jsx';
 import Profile from './page/Profile/Profile.jsx';
 import Tours from './page/Tours/Tours.jsx';
 import TourDetail from './page/TourDetail/TourDetail.jsx';
+import PaymentReturn from './page/PaymentReturn/PaymentReturn.jsx';
+import BookingTicket from './page/BookingTicket/BookingTicket.jsx';
 
 import './App.css';
 
@@ -64,6 +66,8 @@ function AppContent() {
                 <Route path="/login" element={<PageLayout><Login /></PageLayout>} />
                 <Route path="/register" element={<PageLayout><Register /></PageLayout>} />
                 <Route path="/profile" element={<PageLayout><ProtectedRoute><Profile /></ProtectedRoute></PageLayout>} />
+                <Route path="/payment-return" element={<PageLayout><PaymentReturn /></PageLayout>} />
+                <Route path="/booking/:id/ticket" element={<PageLayout><ProtectedRoute><BookingTicket /></ProtectedRoute></PageLayout>} />
               </Routes>
             </AnimatePresence>
           </main>

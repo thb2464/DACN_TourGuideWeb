@@ -69,6 +69,12 @@
         "i18n": { "localized": true }
       }
     },
+    "Child_Price": {
+      "type": "biginteger",
+      "pluginOptions": {
+        "i18n": { "localized": true }
+      }
+    },
     "Duration_Days": {
       "type": "integer",
       "pluginOptions": {

@@ -763,6 +763,67 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBookingBooking extends Struct.CollectionTypeSchema {
+  collectionName: 'bookings';
+  info: {
+    displayName: 'Booking';
+    pluralName: 'bookings';
+    singularName: 'booking';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    adult_count: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    booking_date: Schema.Attribute.DateTime;
+    child_count: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0>;
+    contact_email: Schema.Attribute.String & Schema.Attribute.Required;
+    contact_name: Schema.Attribute.String & Schema.Attribute.Required;
+    contact_phone: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::booking.booking'
+    > &
+      Schema.Attribute.Private;
+    payment_ref: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<
+      ['Pending', 'Paid', 'Failed', 'Cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Pending'>;
+    total_price: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    tour: Schema.Attribute.Relation<'manyToOne', 'api::tour.tour'>;
+    travel_date: Schema.Attribute.Date & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    vnpay_transaction_no: Schema.Attribute.String;
+  };
+}
+
 export interface ApiCommunityHeroCommunityHero extends Struct.SingleTypeSchema {
   collectionName: 'community_heroes';
   info: {
@@ -1875,6 +1936,12 @@ export interface ApiTourTour extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
+    Child_Price: Schema.Attribute.BigInteger &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2535,6 +2602,7 @@ declare module '@strapi/strapi' {
       'api::about-journey.about-journey': ApiAboutJourneyAboutJourney;
       'api::about-team.about-team': ApiAboutTeamAboutTeam;
       'api::author.author': ApiAuthorAuthor;
+      'api::booking.booking': ApiBookingBooking;
       'api::community-hero.community-hero': ApiCommunityHeroCommunityHero;
       'api::faq.faq': ApiFaqFaq;
       'api::home-commitment.home-commitment': ApiHomeCommitmentHomeCommitment;

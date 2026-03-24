@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import config from '../../config/strapi';
 import TourCard from '../../components/TourCard/TourCard';
+import PriceRangeSlider from '../../components/PriceRangeSlider/PriceRangeSlider';
 import AnimateOnScroll from '../../components/AnimateOnScroll/AnimateOnScroll';
 import './Tours.css';
 
@@ -28,6 +29,7 @@ const displayData = {
     sortPriceLow: 'Gia tang dan',
     sortPriceHigh: 'Gia giam dan',
     sortRating: 'Danh gia cao',
+    priceRange: 'Khoang gia',
     loading: 'Dang tai tour...',
     noTours: 'Khong tim thay tour nao.',
     error: 'Khong the tai tour.',
@@ -54,6 +56,7 @@ const displayData = {
     error: 'Could not load tours.',
     prevButton: 'PREV',
     nextButton: 'NEXT',
+    priceRange: 'Price Range',
   },
   zh: {
     pageTitle: '旅游线路',
@@ -75,6 +78,7 @@ const displayData = {
     error: '无法加载旅游。',
     prevButton: '上一页',
     nextButton: '下一页',
+    priceRange: '价格范围',
   },
 };
 
@@ -106,6 +110,7 @@ const Tours = () => {
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortValue, setSortValue] = useState('createdAt:desc');
+  const [priceRange, setPriceRange] = useState([0, 50000000]);
 
   const regionTabs = [
     { key: 'all', label: TEXT.allRegions },
@@ -133,6 +138,12 @@ const Tours = () => {
       if (searchTerm) {
         filterQuery += `&filters[Tour_Name][$containsi]=${encodeURIComponent(searchTerm)}`;
       }
+      if (priceRange[0] > 0) {
+        filterQuery += `&filters[Price][$gte]=${priceRange[0]}`;
+      }
+      if (priceRange[1] < 50000000) {
+        filterQuery += `&filters[Price][$lte]=${priceRange[1]}`;
+      }
 
       const apiUrl = `${config.STRAPI_URL}${config.API_ENDPOINTS.TOURS}?${populateQuery}&${paginationQuery}&${sortQuery}&${localeQuery}${filterQuery}`;
 
@@ -151,6 +162,11 @@ const Tours = () => {
           const term = searchTerm.toLowerCase();
           tourList = tourList.filter(t => (t.Tour_Name || '').toLowerCase().includes(term));
         }
+        // Price range filter
+        tourList = tourList.filter(t => {
+          const p = parseInt(t.Price) || 0;
+          return p >= priceRange[0] && p <= priceRange[1];
+        });
 
         // Client-side sorting (for mock data fallback)
         const [sortField, sortDir] = sortValue.split(':');
@@ -185,7 +201,7 @@ const Tours = () => {
     };
 
     fetchTours();
-  }, [activeRegion, searchTerm, pagination.page, sortValue, currentLanguage]);
+  }, [activeRegion, searchTerm, pagination.page, sortValue, priceRange, currentLanguage]);
 
   const handleRegionClick = (region) => {
     setActiveRegion(region);
@@ -200,6 +216,11 @@ const Tours = () => {
 
   const handleSortChange = (e) => {
     setSortValue(e.target.value);
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
+
+  const handlePriceChange = (values) => {
+    setPriceRange(values);
     setPagination(prev => ({ ...prev, page: 1 }));
   };
 
@@ -234,6 +255,13 @@ const Tours = () => {
             ))}
           </div>
           <div className="tours-controls-right">
+            <PriceRangeSlider
+              min={0}
+              max={50000000}
+              values={priceRange}
+              onChange={handlePriceChange}
+              label={TEXT.priceRange}
+            />
             <form className="tours-search-form" onSubmit={handleSearchSubmit}>
               <input
                 type="text"

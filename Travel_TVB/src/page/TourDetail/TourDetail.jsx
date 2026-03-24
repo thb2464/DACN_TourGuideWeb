@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../context/LanguageContext';
 import config from '../../config/strapi';
+import BookingForm from '../../components/BookingForm/BookingForm';
 import './TourDetail.css';
 
 const regionLabels = {
@@ -372,11 +373,8 @@ const TourDetail = () => {
                 )}
               </div>
 
-              {/* CTA Buttons */}
-              <div className="tour-sidebar-actions">
-                <Link to="/contact" className="tour-sidebar-btn primary">{TEXT.bookNow}</Link>
-                <Link to="/contact" className="tour-sidebar-btn secondary">{TEXT.contactUs}</Link>
-              </div>
+              {/* Booking Form */}
+              <BookingForm tour={tour} />
             </div>
           </aside>
         </div>
