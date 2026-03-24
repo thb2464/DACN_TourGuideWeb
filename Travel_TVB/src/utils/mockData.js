@@ -244,6 +244,164 @@ const mockData = {
             Title: "Subscribe to our Newsletter",
             Description: "Get the best deals on Vietnam tours."
         }
+    },
+    '/api/tours': {
+        data: [
+            {
+                id: 1,
+                Tour_Name: 'Ha Long Bay - Cat Ba 3N2D',
+                slug: 'ha-long-bay-cat-ba-3n2d',
+                Short_Description: 'Cruise through stunning limestone karsts and explore Cat Ba Island with overnight stay on luxury cruise.',
+                Price: '4990000',
+                Original_Price: '5990000',
+                Duration_Days: 3,
+                Duration_Nights: 2,
+                Region: 'MienBac',
+                Location: 'Ha Long, Quang Ninh',
+                Departure_Location: 'Ha Noi',
+                Rating: 4.8,
+                Review_Count: 124,
+                Transport_Type: 'XeKhach',
+                Is_Featured: true,
+                Featured_Image: { url: getImg('halong') },
+                tour_category: { id: 1, Category_Name: 'Beach & Island', Category_Slug: 'bien-dao' },
+                Highlights: [
+                    { Highlight_Text: 'Overnight on luxury cruise' },
+                    { Highlight_Text: 'Kayaking through caves' },
+                    { Highlight_Text: 'Swimming at pristine beaches' }
+                ]
+            },
+            {
+                id: 2,
+                Tour_Name: 'Sapa Trekking Adventure 4N3D',
+                slug: 'sapa-trekking-adventure-4n3d',
+                Short_Description: 'Trek through terraced rice fields and experience homestay with ethnic minorities in Sapa.',
+                Price: '3500000',
+                Original_Price: null,
+                Duration_Days: 4,
+                Duration_Nights: 3,
+                Region: 'MienBac',
+                Location: 'Sapa, Lao Cai',
+                Departure_Location: 'Ha Noi',
+                Rating: 4.6,
+                Review_Count: 89,
+                Transport_Type: 'KetHop',
+                Is_Featured: false,
+                Featured_Image: { url: getImg('sapa') },
+                tour_category: { id: 2, Category_Name: 'Trekking', Category_Slug: 'leo-nui' },
+                Highlights: [
+                    { Highlight_Text: 'Homestay with Hmong people' },
+                    { Highlight_Text: 'Trek through rice terraces' },
+                    { Highlight_Text: 'Visit Fansipan peak' }
+                ]
+            },
+            {
+                id: 3,
+                Tour_Name: 'Hue - Da Nang - Hoi An 5N4D',
+                slug: 'hue-da-nang-hoi-an-5n4d',
+                Short_Description: 'Explore the imperial city, marble mountains, and the ancient town of Hoi An.',
+                Price: '6990000',
+                Original_Price: '7990000',
+                Duration_Days: 5,
+                Duration_Nights: 4,
+                Region: 'MienTrung',
+                Location: 'Hue - Da Nang - Hoi An',
+                Departure_Location: 'TP. Ho Chi Minh',
+                Rating: 4.9,
+                Review_Count: 156,
+                Transport_Type: 'MayBay',
+                Is_Featured: true,
+                Featured_Image: { url: getImg('hoian') },
+                tour_category: { id: 3, Category_Name: 'Culture', Category_Slug: 'van-hoa' },
+                Highlights: [
+                    { Highlight_Text: 'Visit Hue Imperial Citadel' },
+                    { Highlight_Text: 'Explore Hoi An Ancient Town' },
+                    { Highlight_Text: 'Ba Na Hills & Golden Bridge' }
+                ]
+            },
+            {
+                id: 4,
+                Tour_Name: 'Phu Quoc Beach Paradise 4N3D',
+                slug: 'phu-quoc-beach-paradise-4n3d',
+                Short_Description: 'Relax on white sandy beaches and explore the pearl island of Vietnam.',
+                Price: '5490000',
+                Original_Price: null,
+                Duration_Days: 4,
+                Duration_Nights: 3,
+                Region: 'MienNam',
+                Location: 'Phu Quoc, Kien Giang',
+                Departure_Location: 'TP. Ho Chi Minh',
+                Rating: 4.7,
+                Review_Count: 98,
+                Transport_Type: 'MayBay',
+                Is_Featured: true,
+                Featured_Image: { url: getImg('phuquoc') },
+                tour_category: { id: 1, Category_Name: 'Beach & Island', Category_Slug: 'bien-dao' },
+                Highlights: [
+                    { Highlight_Text: 'Snorkeling at An Thoi Islands' },
+                    { Highlight_Text: 'Visit Vinpearl Safari' },
+                    { Highlight_Text: 'Sunset at Long Beach' }
+                ]
+            },
+            {
+                id: 5,
+                Tour_Name: 'Da Lat Flower City 3N2D',
+                slug: 'da-lat-flower-city-3n2d',
+                Short_Description: 'Discover the romantic city of eternal spring with flower gardens and waterfalls.',
+                Price: '2990000',
+                Original_Price: '3490000',
+                Duration_Days: 3,
+                Duration_Nights: 2,
+                Region: 'TayNguyen',
+                Location: 'Da Lat, Lam Dong',
+                Departure_Location: 'TP. Ho Chi Minh',
+                Rating: 4.5,
+                Review_Count: 73,
+                Transport_Type: 'XeKhach',
+                Is_Featured: false,
+                Featured_Image: { url: getImg('dalat') },
+                tour_category: { id: 4, Category_Name: 'Nature', Category_Slug: 'thien-nhien' },
+                Highlights: [
+                    { Highlight_Text: 'Visit flower gardens' },
+                    { Highlight_Text: 'Explore Datanla Waterfall' },
+                    { Highlight_Text: 'Cable car to Langbiang' }
+                ]
+            },
+            {
+                id: 6,
+                Tour_Name: 'Vietnam North to South 10N9D',
+                slug: 'vietnam-north-to-south-10n9d',
+                Short_Description: 'The ultimate Vietnam experience from Hanoi to Ho Chi Minh City covering all highlights.',
+                Price: '15990000',
+                Original_Price: '18990000',
+                Duration_Days: 10,
+                Duration_Nights: 9,
+                Region: 'NhieuVung',
+                Location: 'Ha Noi - Hue - Hoi An - TP.HCM',
+                Departure_Location: 'Ha Noi',
+                Rating: 4.9,
+                Review_Count: 210,
+                Transport_Type: 'KetHop',
+                Is_Featured: true,
+                Featured_Image: { url: getImg('vietnam') },
+                tour_category: { id: 5, Category_Name: 'Package', Category_Slug: 'tron-goi' },
+                Highlights: [
+                    { Highlight_Text: 'Ha Long Bay cruise' },
+                    { Highlight_Text: 'Hoi An ancient town' },
+                    { Highlight_Text: 'Mekong Delta boat tour' }
+                ]
+            }
+        ],
+        meta: { pagination: { page: 1, pageSize: 9, pageCount: 1, total: 6 } }
+    },
+    '/api/tour-categories': {
+        data: [
+            { id: 1, Category_Name: 'Beach & Island', Category_Slug: 'bien-dao' },
+            { id: 2, Category_Name: 'Trekking', Category_Slug: 'leo-nui' },
+            { id: 3, Category_Name: 'Culture', Category_Slug: 'van-hoa' },
+            { id: 4, Category_Name: 'Nature', Category_Slug: 'thien-nhien' },
+            { id: 5, Category_Name: 'Package', Category_Slug: 'tron-goi' }
+        ]
     }
 };
 

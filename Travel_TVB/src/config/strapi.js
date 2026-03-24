@@ -31,6 +31,15 @@ const config = {
     LAYOUT_CTABANNER: '/api/layout-cta-banner',
     LAYOUT_NEWSLETTER: '/api/layout-newsletter',
     NEWSLETTER_SUBMISSION: '/api/newsletter-email-submissons/:id',
+
+    // Auth endpoints
+    AUTH_LOCAL: '/api/auth/local',
+    AUTH_REGISTER: '/api/auth/local/register',
+    USERS_ME: '/api/users/me',
+
+    // Tour endpoints
+    TOURS: '/api/tours',
+    TOUR_CATEGORIES: '/api/tour-categories',
   }
 };
 

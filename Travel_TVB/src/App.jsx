@@ -6,16 +6,17 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion'; 
 
 import { LanguageProvider } from './context/LanguageContext';
+import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/Layout/ScrollToTop/ScrollToTop.jsx';
 import Home_Navbar from './components/Layout/Navbar/Home-Navbar';
 import Newsletter from './components/Layout/Newsletter/Newsletter';
 import ScrollToTopButton from './components/Layout/ScrollToTopButton/ScrollToTopButton.jsx';
 import Footer from './components/Layout/Footer/Footer.jsx';
 
-// 2. Import our new PageLayout wrapper
-import PageLayout from './components/PageLayout/PageLayout.jsx'; 
+import PageLayout from './components/PageLayout/PageLayout.jsx';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx';
 
-// 3. Import all your pages
+// Pages
 import Home from './page/Home/Home';
 import AboutUs from './page/AboutUS/AboutUs';
 import Service from './page/Service/Service.jsx';
@@ -25,6 +26,11 @@ import IndividualPost from './page/Individual-Post/Individual-Post.jsx';
 import News from './page/News/News.jsx';
 import Community from './page/Community/Community.jsx';
 import IndividualCommunityPost from './page/Individual-CommunityPost/Individual-CommunityPost.jsx';
+import Login from './page/Login/Login.jsx';
+import Register from './page/Register/Register.jsx';
+import Profile from './page/Profile/Profile.jsx';
+import Tours from './page/Tours/Tours.jsx';
+import TourDetail from './page/TourDetail/TourDetail.jsx';
 
 import './App.css';
 
@@ -36,32 +42,37 @@ function AppContent() {
   const location = useLocation();
 
   return (
-    <LanguageProvider>
-      <ScrollToTop /> {/* This MUST be outside AnimatePresence */}
-      <div className="App minimal-scrollbar">
-        <Home_Navbar />
-        <main className="main-content">
-          {/* 5. Wrap your <Routes> with <AnimatePresence> */}
-          <AnimatePresence mode="wait"> 
-            <Routes location={location} key={location.pathname}>
-              {/* 6. Wrap every single page with <PageLayout> */}
-              <Route path="/" element={<PageLayout><Home /></PageLayout>} />
-              <Route path="/about" element={<PageLayout><AboutUs /></PageLayout>} />
-              <Route path="/service" element={<PageLayout><Service /></PageLayout>} />
-              <Route path="/contact" element={<PageLayout><Contact /></PageLayout>} />
-              <Route path="/news" element={<PageLayout><News /></PageLayout>} />
-              <Route path="/community" element={<PageLayout><Community /></PageLayout>} />
-              <Route path="/service/:slug" element={<PageLayout><IndividualService /></PageLayout>} />
-              <Route path="/news/:slug" element={<PageLayout><IndividualPost /></PageLayout>} />
-              <Route path="/community/:slug" element={<PageLayout><IndividualCommunityPost /></PageLayout>} />
-            </Routes>
-          </AnimatePresence>
-        </main>
-        <Newsletter />
-        <Footer />
-        <ScrollToTopButton />
-      </div>
-    </LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <ScrollToTop />
+        <div className="App minimal-scrollbar">
+          <Home_Navbar />
+          <main className="main-content">
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageLayout><Home /></PageLayout>} />
+                <Route path="/about" element={<PageLayout><AboutUs /></PageLayout>} />
+                <Route path="/service" element={<PageLayout><Service /></PageLayout>} />
+                <Route path="/contact" element={<PageLayout><Contact /></PageLayout>} />
+                <Route path="/news" element={<PageLayout><News /></PageLayout>} />
+                <Route path="/community" element={<PageLayout><Community /></PageLayout>} />
+                <Route path="/service/:slug" element={<PageLayout><IndividualService /></PageLayout>} />
+                <Route path="/news/:slug" element={<PageLayout><IndividualPost /></PageLayout>} />
+                <Route path="/community/:slug" element={<PageLayout><IndividualCommunityPost /></PageLayout>} />
+                <Route path="/tours" element={<PageLayout><Tours /></PageLayout>} />
+                <Route path="/tours/:slug" element={<PageLayout><TourDetail /></PageLayout>} />
+                <Route path="/login" element={<PageLayout><Login /></PageLayout>} />
+                <Route path="/register" element={<PageLayout><Register /></PageLayout>} />
+                <Route path="/profile" element={<PageLayout><ProtectedRoute><Profile /></ProtectedRoute></PageLayout>} />
+              </Routes>
+            </AnimatePresence>
+          </main>
+          <Newsletter />
+          <Footer />
+          <ScrollToTopButton />
+        </div>
+      </LanguageProvider>
+    </AuthProvider>
   );
 }
 

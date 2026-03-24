@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useLanguage } from '../../../context/LanguageContext'; // Make sure this path is correct
+import { useLanguage } from '../../../context/LanguageContext';
+import { useAuth } from '../../../context/AuthContext';
 import './Home-Navbar.css';
 import config from '../../../config/strapi';
 
+const authDisplayData = {
+  vi: { login: 'Dang Nhap', register: 'Dang Ky', profile: 'Ho So', logout: 'Dang Xuat' },
+  en: { login: 'Login', register: 'Register', profile: 'Profile', logout: 'Logout' },
+  zh: { login: '登录', register: '注册', profile: '个人资料', logout: '退出' },
+};
+
 const Home_Navbar = () => {
-  // 1. Get language state and functions from the context
   const { languages, currentLanguage, handleLanguageSelect } = useLanguage();
+  const { user, isAuthenticated, logout, loading: authLoading } = useAuth();
+  const AUTH_TEXT = authDisplayData[currentLanguage.code] || authDisplayData.en;
 
   const [navbarData, setNavbarData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Local UI state
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -112,6 +121,9 @@ const Home_Navbar = () => {
       if (!event.target.closest('.mobile-menu') && !event.target.closest('.burger-menu')) {
         setIsMobileMenuOpen(false);
       }
+      if (!event.target.closest('.user-menu')) {
+        setIsUserDropdownOpen(false);
+      }
     };
 
     document.addEventListener('click', handleClickOutside);
@@ -174,6 +186,40 @@ const Home_Navbar = () => {
               <span className="nav-cta-arrow">→</span>
             </Link>
 
+            {/* Auth Buttons */}
+            <div className="nav-auth desktop-only">
+              {isAuthenticated ? (
+                <div className="user-menu">
+                  <button
+                    className="user-menu-toggle"
+                    onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                  >
+                    <span className="user-avatar-small">
+                      {(user?.full_name || user?.username || 'U').charAt(0).toUpperCase()}
+                    </span>
+                    <span className="user-display-name">
+                      {user?.full_name || user?.username}
+                    </span>
+                  </button>
+                  {isUserDropdownOpen && (
+                    <div className="user-dropdown">
+                      <Link to="/profile" className="user-dropdown-item" onClick={() => setIsUserDropdownOpen(false)}>
+                        {AUTH_TEXT.profile}
+                      </Link>
+                      <button className="user-dropdown-item user-dropdown-logout" onClick={() => { logout(); setIsUserDropdownOpen(false); }}>
+                        {AUTH_TEXT.logout}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="auth-buttons">
+                  <Link to="/login" className="auth-nav-link">{AUTH_TEXT.login}</Link>
+                  <Link to="/register" className="auth-nav-btn">{AUTH_TEXT.register}</Link>
+                </div>
+              )}
+            </div>
+
             {/* Desktop Language Selector */}
             <div className="language-selector desktop-only">
               <button
@@ -226,6 +272,27 @@ const Home_Navbar = () => {
                 {item.text}
               </Link>
             ))}
+            <div className="mobile-auth-section">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/profile" className="mobile-nav-link" onClick={handleNavLinkClick}>
+                    {AUTH_TEXT.profile}
+                  </Link>
+                  <button className="mobile-nav-link mobile-logout-btn" onClick={() => { logout(); handleNavLinkClick(); }}>
+                    {AUTH_TEXT.logout}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="mobile-nav-link" onClick={handleNavLinkClick}>
+                    {AUTH_TEXT.login}
+                  </Link>
+                  <Link to="/register" className="mobile-nav-link" onClick={handleNavLinkClick}>
+                    {AUTH_TEXT.register}
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
