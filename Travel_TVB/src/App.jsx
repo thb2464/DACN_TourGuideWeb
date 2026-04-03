@@ -12,6 +12,7 @@ import Home_Navbar from './components/Layout/Navbar/Home-Navbar';
 import Newsletter from './components/Layout/Newsletter/Newsletter';
 import ScrollToTopButton from './components/Layout/ScrollToTopButton/ScrollToTopButton.jsx';
 import Footer from './components/Layout/Footer/Footer.jsx';
+import ChatbotWidget from './components/ChatbotWidget/ChatbotWidget.jsx';
 
 import PageLayout from './components/PageLayout/PageLayout.jsx';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx';
@@ -74,6 +75,7 @@ function AppContent() {
           <Newsletter />
           <Footer />
           <ScrollToTopButton />
+          <ChatbotWidget />
         </div>
       </LanguageProvider>
     </AuthProvider>

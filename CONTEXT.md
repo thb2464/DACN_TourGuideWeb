@@ -30,7 +30,7 @@
 | Backend/CMS | Strapi (Headless CMS) | 5.36.0 |
 | Database | SQLite (default) | better-sqlite3 12.4.1 |
 | Auth Plugin | @strapi/plugin-users-permissions | 5.36.0 |
-| Payment (planned) | VNPay Sandbox | Not yet integrated |
+| Payment | VNPay Sandbox | Integrated (Phase 2) |
 | AI/Chatbot (planned) | LangChain + Google AI Studio + Pinecone | Not yet integrated |
 
 **Frontend env:** `VITE_STRAPI_URL=http://localhost:1337`
@@ -49,7 +49,7 @@ Travel_TVB/
 │   ├── main.jsx              # Entry point
 │   ├── App.jsx               # Routing & layout
 │   ├── config/
-│   │   └── strapi.js         # 30+ API endpoint definitions
+│   │   └── strapi.js         # 38+ API endpoint definitions
 │   ├── context/
 │   │   ├── LanguageContext.jsx # i18n (vi, en, zh) via React Context
 │   │   └── AuthContext.jsx    # Auth state (login, register, logout, JWT)
@@ -58,12 +58,14 @@ Travel_TVB/
 │   ├── utils/
 │   │   ├── mockData.js       # Fallback mock data
 │   │   └── mockFetch.js      # Fetch interceptor for mock fallback
-│   ├── components/           # 29 component directories
+│   ├── components/           # 32 component directories
 │   │   ├── Layout/           # Navbar (with auth UI), Footer, Newsletter, CtaBanner, Scroll
 │   │   ├── AnimateOnScroll/  # Scroll-triggered animation wrapper
 │   │   ├── PageLayout/       # Page transition wrapper (Framer Motion)
 │   │   ├── ProtectedRoute/   # Auth guard (redirects to /login if not authenticated)
 │   │   ├── TourCard/         # Tour card (image, price, rating, region, duration)
+│   │   ├── BookingForm/      # Booking form with stepper, date, contact, VNPay payment (Phase 2)
+│   │   ├── PriceRangeSlider/ # Dual-handle price range slider (Phase 2)
 │   │   ├── HeroSlider/       # Home hero carousel
 │   │   ├── Statistic/        # Animated counter cards
 │   │   ├── Commitment/       # Home commitment section
@@ -88,12 +90,14 @@ Travel_TVB/
 │   │   ├── CommunityHeader/  # Community page header
 │   │   ├── Form/             # Contact form with slider
 │   │   └── Map/              # Map display
-│   ├── page/                 # 13 page components
-│   │   ├── Tours/            # Tour listing with region tabs, search, sort, pagination
-│   │   ├── TourDetail/       # Tour detail with hero, highlights, itinerary, sidebar
+│   ├── page/                 # 16 page components
+│   │   ├── Tours/            # Tour listing with region tabs, search, sort, price slider, pagination
+│   │   ├── TourDetail/       # Tour detail with hero, highlights, itinerary, BookingForm sidebar
 │   │   ├── Login/            # Login page (email/username + password)
 │   │   ├── Register/         # Registration page (full_name, email, username, phone, password)
-│   │   └── Profile/          # Protected profile page with user info + logout
+│   │   ├── Profile/          # Protected profile page with user info + order history + ticket links
+│   │   ├── PaymentReturn/    # VNPay payment result (success/failure) (Phase 2)
+│   │   └── BookingTicket/    # E-ticket with QR code for paid bookings (Phase 2)
 │   └── assets/               # Images, SVGs
 ├── .env
 ├── vite.config.js
@@ -112,7 +116,7 @@ Travel_TVB_Server/
 │   ├── plugins.js            # Plugin config
 │   └── server.js             # Host 0.0.0.0, port 1337
 ├── src/
-│   ├── api/                  # 23 content types (see Section 5)
+│   ├── api/                  # 24 content types (see Section 5)
 │   ├── components/           # 19 reusable Strapi components
 │   ├── extensions/           # Empty (user model extended via Admin UI)
 │   └── index.js              # Empty bootstrap
@@ -136,20 +140,20 @@ Travel_TVB_Server/
 | `/news/:slug` | IndividualPost | Article with audio player, related posts, citations |
 | `/community` | Community | Community posts with tabs (Podcast, Analysis, Q&A), search |
 | `/community/:slug` | IndividualCommunityPost | Community post with optional iframe, audio |
-| `/tours` | Tours | Tour listing with region filter tabs, search, sort, pagination (Phase 1) |
-| `/tours/:slug` | TourDetail | Tour detail with hero image, highlights, description, itinerary, gallery, sticky price sidebar (Phase 1) |
+| `/tours` | Tours | Tour listing with region filter tabs, search, sort, price range slider, pagination (Phase 1+2) |
+| `/tours/:slug` | TourDetail | Tour detail with hero image, highlights, description, itinerary, gallery, BookingForm sidebar (Phase 1+2) |
 | `/login` | Login | Login form with email/username + password (Phase 1) |
 | `/register` | Register | Registration form with full_name, email, username, phone, password (Phase 1) |
-| `/profile` | Profile | Protected route — user info display + logout (Phase 1) |
+| `/profile` | Profile | Protected route — user info, order history with ticket links (Phase 1+2) |
+| `/payment-return` | PaymentReturn | VNPay payment result page (success/failure) (Phase 2) |
+| `/booking/:id/ticket` | BookingTicket | Protected route — E-ticket with QR code for paid bookings (Phase 2) |
 
 **NOT yet implemented as routes:**
-- `/booking` or `/cart` - Booking/cart/checkout flow (Phase 2)
-- `/orders` - User order history (Phase 4)
 - No chatbot widget on any page (Phase 3)
 
 ---
 
-## 5. Backend Content Types (23 Total)
+## 5. Backend Content Types (24 Total)
 
 ### SingleType APIs (GET, PUT):
 
@@ -183,6 +187,16 @@ Travel_TVB_Server/
 | single-community-post | `/api/single-community-posts` | Community posts |
 | tour | `/api/tours` | Tour listings (Phase 1) |
 | tour-category | `/api/tour-categories` | Tour categories (Phase 1) |
+| booking | `/api/bookings` | Tour bookings with VNPay payment (Phase 2) |
+
+### Custom API Routes (Booking):
+
+| Method | Endpoint | Auth | Purpose |
+|--------|---------|------|---------|
+| POST | `/api/bookings` | Authenticated | Create booking (concurrency-safe with knex transaction) |
+| POST | `/api/bookings/create-payment-url` | Authenticated | Generate VNPay payment URL (HMAC SHA512) |
+| GET | `/api/bookings/vnpay-return` | Public | VNPay callback — verify checksum, update status, redirect |
+| GET | `/api/bookings/my-bookings` | Authenticated | Get current user's booking history |
 
 ### Reusable Components (19):
 
@@ -195,10 +209,8 @@ Travel_TVB_Server/
 ### User Model (Extended via Admin UI):
 Built-in Strapi `users-permissions` User model extended with: `full_name` (string), `phone` (string)
 
-### NOT yet created as content types:
-- **Booking/Order** (collection type with tour relation, customer, quantity, status, total price)
-- **Cart** (or session-based cart)
-- **Payment** (VNPay transaction records)
+### Booking Schema Fields (Phase 2):
+`tour` (relation to Tour), `user` (relation to User), `adult_count`, `child_count`, `travel_date`, `total_price` (biginteger VND), `status` (enum: Pending/Paid/Failed/Cancelled), `payment_ref`, `vnpay_transaction_no`, `booking_date`, `contact_name`, `contact_email`, `contact_phone`. No i18n, no draft/publish. Relations stored in Strapi 5 link tables (`bookings_tour_lnk`, `bookings_user_lnk`).
 
 ---
 
@@ -206,8 +218,8 @@ Built-in Strapi `users-permissions` User model extended with: `full_name` (strin
 
 ### Fully Working:
 - Multi-language support (Vietnamese, English, Chinese) with `LanguageContext`
-- All 14 frontend routes rendering with Strapi data
-- API integration with Strapi (35+ endpoints configured in `config/strapi.js`)
+- All 16 frontend routes rendering with Strapi data
+- API integration with Strapi (38+ endpoints configured in `config/strapi.js`)
 - Mock data fallback system (`mockFetch.js` intercepts failed API calls) with client-side filtering for tour mock data
 - Framer Motion page transitions and scroll animations
 - Contact form submission (POST to `/api/form-submissions`)
@@ -220,17 +232,17 @@ Built-in Strapi `users-permissions` User model extended with: `full_name` (strin
 - FAQ accordion
 - Animated counters (statistics section)
 - **User Authentication (3.6):** Login, register, profile pages with JWT auth via Strapi `users-permissions` plugin. AuthContext manages state. Navbar shows Login/Register for guests, user dropdown (Profile/Logout) for authenticated users. Protected routes redirect to `/login`. (Phase 1)
-- **Tour System (3.1 foundation):** Tour and Tour-Category content types in Strapi with full schema (name, slug, price in VND, duration, region, location, transport, highlights, rich text description/itinerary, gallery, rating). Tour listing page with region filter tabs, keyword search, sort (price/rating/newest), pagination. Tour detail page with hero image, highlights, rich text content, image gallery, sticky price sidebar with CTA buttons. (Phase 1)
+- **Tour System (3.1):** Tour and Tour-Category content types in Strapi with full schema (name, slug, price/child_price in VND, duration, region, location, transport, highlights, rich text description/itinerary, gallery, rating). Tour listing page with region filter tabs, keyword search, price range slider, sort (price/rating/newest), pagination. Tour detail page with hero image, highlights, rich text content, image gallery, BookingForm sidebar. (Phase 1+2)
+- **Tour Booking & Payment (3.2):** Full booking flow with VNPay Sandbox integration. BookingForm with adult/child stepper, date picker, contact info, auto-calculated VND total. Concurrency-safe booking creation via knex transaction (checks Max_Participants, rolls back if full). VNPay HMAC SHA512 signed payment URL generation, callback verification, automatic status update (Pending→Paid/Failed). PaymentReturn page shows success/failure. (Phase 2)
+- **User Order History (3.6 REQ-AUTH-05):** Profile page shows booking history with tour name, date, guests, total, status badges (Pending/Paid/Failed/Cancelled). "View Ticket" button on paid orders links to e-ticket page. (Phase 2)
+- **E-Ticket System:** BookingTicket page with styled ticket layout, QR code (via free API), booking reference, print button. (Phase 2)
 
 ### Partially Working:
-- **Admin Content Management (3.4):** Strapi admin panel is functional for all content types including Tours (CRUD). Order management not yet available (REQ-ADMIN-03).
-- **Blog & Travel Guide (3.5):** News and Community post systems work well. Missing: "Suggested Tours" section at the bottom of posts (REQ-BLOG-05 partial — now possible with Tour content type).
-- **Tour Search & Filter (3.1):** Keyword search and region filter tabs work. Price range slider not yet implemented (Phase 2).
+- **Admin Content Management (3.4):** Strapi admin panel is functional for all content types including Tours and Bookings (CRUD). Bookings visible in admin with status tracking.
+- **Blog & Travel Guide (3.5):** News and Community post systems work well. Missing: "Suggested Tours" section at the bottom of posts (REQ-BLOG-05 partial).
 
 ### Not Implemented at All:
-- **Tour Booking & Payment (3.2):** No booking flow, no cart, no VNPay integration, no order management (Phase 2)
 - **AI Chatbot (3.3):** No chatbot widget, no LangChain/Pinecone/Google AI integration (Phase 3)
-- **User Order History (3.6 REQ-AUTH-05):** Profile page exists but order history section requires Booking content type (Phase 4)
 
 ---
 
@@ -241,22 +253,18 @@ Built-in Strapi `users-permissions` User model extended with: `full_name` (strin
 | Requirement | Status | What's Needed |
 |------------|--------|---------------|
 | REQ-SEARCH-01: Search bar by keyword | **Done** | Keyword search on Tour_Name implemented in Tours page |
-| REQ-SEARCH-02: Price range slider | Missing | Build price range slider component (Phase 2) |
+| REQ-SEARCH-02: Price range slider | **Done** | Dual-handle PriceRangeSlider component integrated in Tours page (Phase 2) |
 | REQ-SEARCH-03: Location category filter | **Done** | Region filter tabs (MienBac/MienTrung/MienNam/TayNguyen/NhieuVung) |
 | REQ-SEARCH-04: Results show image, name, price, duration | **Done** | TourCard component shows all required fields + rating |
 
-### 3.2 Đặt Tour và Thanh toán — NOT IMPLEMENTED
+### 3.2 Đặt Tour và Thanh toán — FULLY IMPLEMENTED (Phase 2)
 
 | Requirement | Status | What's Needed |
 |------------|--------|---------------|
-| REQ-BOOK-01: Select adult/child quantity | Missing | Booking form component with quantity selectors |
-| REQ-BOOK-02: Calculate total price | Missing | Price calculation logic (adult price × qty + child price × qty) |
-| REQ-BOOK-03: VNPay integration with checksum | Missing | VNPay API integration (backend route for creating payment URL) |
-| REQ-BOOK-04: Save order as "Pending" | Missing | Order/Booking content type in Strapi, order creation API |
-
-**Backend needed:** `Booking` content type (tour relation, user relation, adult_count, child_count, total_price, status enum [Pending, Paid, Cancelled], payment_ref, booking_date). Custom controller for VNPay payment URL generation and callback handling.
-
-**Frontend needed:** BookingForm component, CartPage or BookingConfirmation page, VNPay redirect flow, OrderSuccess/OrderFail pages.
+| REQ-BOOK-01: Select adult/child quantity | **Done** | BookingForm with +/- steppers for adults and children |
+| REQ-BOOK-02: Calculate total price | **Done** | Auto-calculated: (adults × Price) + (children × Child_Price) |
+| REQ-BOOK-03: VNPay integration with checksum | **Done** | HMAC SHA512 signed payment URL, callback verification |
+| REQ-BOOK-04: Save order as "Pending" | **Done** | Concurrency-safe booking creation via knex transaction |
 
 ### 3.3 Trợ lý ảo AI — NOT IMPLEMENTED
 
@@ -270,13 +278,13 @@ Built-in Strapi `users-permissions` User model extended with: `full_name` (strin
 
 **Frontend needed:** FloatingChatWidget component, ChatWindow with message history, typing indicator, message input.
 
-### 3.4 Quản trị Nội dung — MOSTLY IMPLEMENTED
+### 3.4 Quản trị Nội dung — FULLY IMPLEMENTED
 
 | Requirement | Status | What's Needed |
 |------------|--------|---------------|
 | REQ-ADMIN-01: Admin login to Strapi | **Done** | Strapi admin panel accessible at `/admin` |
-| REQ-ADMIN-02: CRUD Tours and Posts | **Done** | Posts and Tours CRUD both functional in Strapi admin |
-| REQ-ADMIN-03: View order list | Missing | No Order/Booking content type exists yet (Phase 2) |
+| REQ-ADMIN-02: CRUD Tours and Posts | **Done** | Posts, Tours, and Bookings CRUD all functional in Strapi admin |
+| REQ-ADMIN-03: View order list | **Done** | Bookings collection visible in Strapi admin with status tracking |
 
 ### 3.5 Blog và Hướng dẫn Du lịch — MOSTLY IMPLEMENTED
 
@@ -298,7 +306,7 @@ This feature was added to FunctionalReg.md as Section 3.6. Implementation comple
 | REQ-AUTH-02: Login with email/password, return JWT | **Done** | Login page + AuthContext |
 | REQ-AUTH-03: Password hashing | **Done** | Handled by Strapi users-permissions plugin |
 | REQ-AUTH-04: Profile page | **Done** | Profile page showing user info |
-| REQ-AUTH-05: Order history page | Missing | Requires Booking content type (Phase 4) |
+| REQ-AUTH-05: Order history page | **Done** | Profile page shows booking history with status badges + e-ticket links (Phase 2) |
 | REQ-AUTH-06: Navbar auth state | **Done** | Guest: Login/Register buttons; Logged in: user dropdown |
 
 ---
@@ -348,22 +356,18 @@ Phase 1 (Foundation):
         ├── Backend: Create Tour content type in Strapi, populate sample data
         └── Frontend: Tour listing page, tour detail page, tour card component
 
-Phase 2 (Core Business):
-  ├── 3.1 Search & Filter (depends on Tour content type)
-  │     └── Frontend: SearchBar, PriceRangeSlider, LocationFilter components
-  └── 3.2 Booking & Payment (depends on Auth + Tour)
-        ├── Backend: Create Booking content type, VNPay integration endpoint
-        └── Frontend: BookingForm, checkout flow, order confirmation pages
+Phase 2 (Core Business): ✅ COMPLETED
+  ├── 3.1 Search & Filter — PriceRangeSlider integrated
+  ├── 3.2 Booking & Payment — Full VNPay Sandbox integration
+  ├── 3.4 Admin order management — Bookings visible in Strapi admin
+  ├── 3.6 User order history — Profile shows bookings + e-ticket links
+  └── E-Ticket system — QR code ticket for paid bookings
 
-Phase 3 (Enhancement):
+Phase 3 (Enhancement): NEXT
   ├── 3.3 AI Chatbot (depends on Tour data existing)
   │     ├── Backend: RAG pipeline (vectorize tours → Pinecone → LLM query endpoint)
   │     └── Frontend: FloatingChatWidget component
   └── 3.5 Blog improvements (suggested tours at post bottom)
-
-Phase 4 (Polish):
-  └── Admin order management (REQ-ADMIN-03)
-  └── User order history (REQ-AUTH-05)
 ```
 
 ---
@@ -378,11 +382,12 @@ Phase 4 (Polish):
 - **Animations:** Framer Motion for page transitions (`AnimatePresence`) and scroll reveals (`AnimateOnScroll`).
 
 ### Backend Architecture
-- **Pattern:** All 23 content types use Strapi's default `createCoreController` and `createCoreService` factories — zero custom business logic.
+- **Pattern:** 23 of 24 content types use Strapi's default factories. The **Booking** content type has a custom controller with concurrency-safe creation (knex transactions), VNPay HMAC SHA512 payment URL generation, and callback verification. Strapi 5 uses snake_case DB columns and separate link tables for relations (`bookings_tour_lnk`, `bookings_user_lnk`).
 - **i18n:** All content types support internationalization (localized content).
 - **Draft/Publish:** All content types have draft/publish workflow enabled.
 - **API Limits:** Default 25 items/page, max 100, response includes count.
-- **Custom Logic Needed For:** VNPay payment URL generation/callback (cannot be done with default Strapi CRUD), RAG chatbot endpoint. User registration fields (`full_name`, `phone`) handled via Strapi plugin config + Admin UI field extension.
+- **Custom Logic Implemented:** VNPay payment URL generation/callback in Booking custom controller. User registration fields (`full_name`, `phone`) handled via Strapi plugin config + Admin UI field extension.
+- **Custom Logic Still Needed:** RAG chatbot endpoint (Phase 3).
 
 ### Current Domain Mismatch
 The current frontend and backend content appears to be styled as an **insurance/corporate portfolio website**, not a travel tour website. The "Service" pages reference insurance products, and the content structure reflects a corporate website. This will need to be adapted or the tour features built alongside the existing content structure.
@@ -415,8 +420,15 @@ npm run dev          # Starts at http://localhost:5173 (default Vite port)
 - `VITE_STRAPI_URL` — Backend API base URL
 - `VITE_STRAPI_API_TOKEN` — Strapi full-access API token
 
-### External Services (Not Yet Configured)
-- **VNPay Sandbox:** Needs merchant credentials, secret key, return URL config
+**Backend (.env) — VNPay (Phase 2):**
+- `VNPAY_TMN_CODE` — Merchant terminal code (`6UH2PIXS`)
+- `VNPAY_HASH_SECRET` — HMAC secret key for checksum
+- `VNPAY_URL` — Sandbox payment URL
+- `VNPAY_RETURN_URL` — Callback URL (`http://localhost:1337/api/bookings/vnpay-return`)
+- `FRONTEND_URL` — Frontend URL for redirect after payment (`http://localhost:5173`)
+
+### External Services
+- **VNPay Sandbox:** Fully configured and working (Phase 2). Test card: `9704198526191432198`, holder `NGUYEN VAN A`, date `07/15`, OTP `123456`
 - **Google AI Studio:** Needs API key for LLM calls
 - **Pinecone:** Needs API key, environment, index name for vector storage
 - **LangChain:** Orchestration library, no API key needed (uses above services)
@@ -434,11 +446,11 @@ npm run dev          # Starts at http://localhost:5173 (default Vite port)
 | News/Blog | Full (listing, detail, audio, search, pagination) | YouTube embed in regular posts, suggested tours |
 | Community | Full (listing, detail, tabs, iframe support) | - |
 | Multi-language | Full (vi, en, zh) | Extend to new pages/components |
-| Tour System | **Phase 1 Complete** (content type, listing, detail, search, region filter, sort) | Price range slider (Phase 2) |
-| Booking/Payment | Nothing | Content type, booking flow, VNPay integration (Phase 2) |
-| User Auth | **Phase 1 Complete** (login, register, profile, JWT, AuthContext, Navbar integration) | Order history (Phase 4) |
+| Tour System | **Phase 1+2 Complete** (content type, listing, detail, search, region filter, price slider, sort) | - |
+| Booking/Payment | **Phase 2 Complete** (booking form, VNPay integration, concurrency control, payment flow) | - |
+| User Auth | **Phase 1+2 Complete** (login, register, profile, JWT, order history, e-tickets) | - |
 | AI Chatbot | Nothing | RAG pipeline, chat widget, LLM integration (Phase 3) |
-| Order Management | Nothing | Content type, admin view, user order history (Phase 2/4) |
+| Order Management | **Phase 2 Complete** (Strapi admin view, user order history, e-ticket with QR) | - |
 
 ---
 
@@ -496,10 +508,64 @@ npm run dev          # Starts at http://localhost:5173 (default Vite port)
 - Authenticated role: enabled `me` (User)
 - User content type: added `full_name` and `phone` fields via Content-Type Builder
 
-#### What Remains for Phase 2
-- **Booking & Payment (3.2):** Booking content type, VNPay integration, checkout flow
-- **Search enhancements (3.1):** Price range slider component
-- **AI Chatbot (3.3):** RAG pipeline, floating chat widget
+---
+
+### Phase 2 — Booking & Payment + Search Enhancement (2026-03-24)
+
+#### Track A: Booking & Payment System (Feature 3.2)
+
+**Backend files created:**
+- `Travel_TVB_Server/src/api/booking/content-types/booking/schema.json` — Booking CollectionType: tour relation (via `bookings_tour_lnk`), user relation (via `bookings_user_lnk`), `adult_count`, `child_count`, `travel_date`, `total_price` (biginteger VND), `status` (enum: Pending/Paid/Failed/Cancelled), `payment_ref`, `vnpay_transaction_no`, `booking_date`, `contact_name`, `contact_email`, `contact_phone`. No i18n, no draft/publish.
+- `Travel_TVB_Server/src/api/booking/controllers/booking.js` — **First custom controller in the project.** Four methods:
+  - `create` (override) — Concurrency-safe: wraps capacity check + insert in a knex transaction. Queries `bookings_tour_lnk` join to count booked participants for tour+date, checks against `max_participants`, calculates total from `price`/`child_price`, rolls back if capacity exceeded. Inserts into `bookings` table + link tables (`bookings_tour_lnk`, `bookings_user_lnk`). Generates `document_id` via `crypto.randomUUID()` (Strapi 5 requirement).
+  - `createPaymentUrl` — Receives `bookingId`, builds VNPay param object, sorts with VNPay's official `sortObject` (encodeURIComponent on keys+values, `%20`→`+`), signs with HMAC SHA512 using `qs.stringify({ encode: false })`, returns full payment URL.
+  - `vnpayReturn` — Receives VNPay redirect query params, verifies HMAC SHA512 checksum, extracts bookingId from `vnp_TxnRef`, updates booking status to Paid (code "00") or Failed, redirects to frontend `/payment-return?status=...&bookingId=...`.
+  - `myBookings` — Fetches authenticated user's bookings via `bookings_user_lnk` join, enriches with tour names via `bookings_tour_lnk` join.
+- `Travel_TVB_Server/src/api/booking/services/booking.js` — Default core service
+- `Travel_TVB_Server/src/api/booking/routes/01-custom-booking.js` — Custom routes (named `01-` to load before default routes and prevent `:id` catching): `POST /bookings/create-payment-url` (authenticated), `GET /bookings/vnpay-return` (public, `auth: false`), `GET /bookings/my-bookings` (authenticated)
+- `Travel_TVB_Server/src/api/booking/routes/booking.js` — Explicit CRUD routes (replaced `createCoreRouter` to prevent `GET /bookings/:id` from catching custom paths)
+
+**Backend files modified:**
+- `Travel_TVB_Server/src/api/tour/content-types/tour/schema.json` — Added `Child_Price` (biginteger, i18n localized) for per-tour child pricing
+- `Travel_TVB_Server/.env` — Added `VNPAY_TMN_CODE=6UH2PIXS`, `VNPAY_HASH_SECRET`, `VNPAY_URL`, `VNPAY_RETURN_URL=http://localhost:1337/api/bookings/vnpay-return`, `FRONTEND_URL=http://localhost:5173`
+
+**Frontend files created:**
+- `Travel_TVB/src/components/BookingForm/BookingForm.jsx` + `BookingForm.css` — Embedded in TourDetail sidebar. Shows price per adult/child, +/- steppers, date picker (min=tomorrow), contact info pre-filled from auth user, auto-calculated VND total, "Pay with VNPay" button. Requires login (shows "Login to book" for guests). Two-step submit: POST booking → POST create-payment-url → redirect to VNPay.
+- `Travel_TVB/src/page/PaymentReturn/PaymentReturn.jsx` + `PaymentReturn.css` — Reads `?status=success&bookingId=X` from URL. Success: green check icon, booking reference, "View My Bookings" link. Failed: red X icon, "Try Again" link. Light blue mesh background matching site style.
+- `Travel_TVB/src/components/PriceRangeSlider/PriceRangeSlider.jsx` + `PriceRangeSlider.css` — Dual-handle range slider using two overlaid `<input type="range">` elements. Custom CSS thumb styling, VND formatted labels (e.g. "2M ₫"), 100K step. No external library.
+- `Travel_TVB/src/page/BookingTicket/BookingTicket.jsx` + `BookingTicket.css` — E-ticket page for paid bookings. Styled ticket card with dark header (company name + "Paid" badge), notch divider, tour details grid, total paid, QR code (via `api.qrserver.com`, encodes verification URL), booking reference. Print button (`window.print()`) with print-specific CSS that hides UI chrome.
+
+**Frontend files modified:**
+- `Travel_TVB/src/config/strapi.js` — Added `BOOKINGS`, `BOOKING_CREATE_PAYMENT`, `BOOKING_MY_BOOKINGS` endpoints
+- `Travel_TVB/src/page/TourDetail/TourDetail.jsx` — Imported `BookingForm`, replaced static "Book Now"/"Contact Us" CTA links with `<BookingForm tour={tour} />` in sidebar
+- `Travel_TVB/src/page/Tours/Tours.jsx` — Added `PriceRangeSlider` import, `priceRange` state, price filter in API query (`filters[Price][$gte]`/`[$lte]`), client-side price filter fallback, `handlePriceChange` handler, slider placed in controls section
+- `Travel_TVB/src/page/Tours/Tours.css` — (no structural changes needed, slider self-contained)
+- `Travel_TVB/src/page/Profile/Profile.jsx` — Complete rewrite: added `useEffect` to fetch bookings from `/api/bookings/my-bookings` with JWT, order history section with cards showing tour name (linked), travel date, guests, total price, status badge (Pending=yellow, Paid=green, Failed=red, Cancelled=grey), "View Ticket" button on paid orders linking to `/booking/:id/ticket`
+- `Travel_TVB/src/page/Profile/Profile.css` — Changed layout to vertical column, added `.profile-orders-container`, `.profile-order-card`, `.profile-order-details`, status badge styles, `.profile-ticket-btn`
+- `Travel_TVB/src/App.jsx` — Added imports for `PaymentReturn` and `BookingTicket`, added routes: `/payment-return` (public), `/booking/:id/ticket` (protected)
+
+#### Bug Fixes & Debugging (VNPay Integration)
+
+- **Strapi 5 DB schema mismatch:** Initial custom controller used PascalCase column names (`Tour_Name`, `Max_Participants`, `tour_id` on bookings). Strapi 5 uses snake_case (`tour_name`, `max_participants`) and separate link tables for relations (`bookings_tour_lnk`, `bookings_user_lnk`). Fixed by querying actual SQLite schema via `pragma('table_info(...)`)` and rewriting all knex queries.
+- **VNPay signature error (code 70):** Required 4 iterations to fix:
+  1. Initial `sortObject` used `encodeURIComponent` on values — VNPay rejected (wrong encoding)
+  2. Switched to `qs.stringify({ encode: false })` with raw values — still rejected
+  3. Switched to `URLSearchParams` — encoded spaces as `+` but VNPay expected `%20` — still rejected
+  4. **Fix:** Used VNPay's exact official `sortObject` from their GitHub demo: encodes both keys AND values with `encodeURIComponent`, replaces `%20` with `+`, then `qs.stringify({ encode: false })` for both signing and URL construction. This is counterintuitive (encode before stringify with encode:false) but matches VNPay's server-side verification.
+- **Wrong HashSecret cached:** After updating `.env` with the correct secret, Strapi continued using the old secret from memory. Required full process kill (`npx kill-port 1337`) and restart — Strapi's hot reload doesn't re-read `.env`.
+- **VNPay callback 403 Forbidden:** Custom route `GET /bookings/vnpay-return` with `auth: false` was being caught by the default core router's `GET /bookings/:id` pattern (treating "vnpay-return" as an ID). Fixed by: (1) renaming custom routes file to `01-custom-booking.js` for alphabetical priority, (2) replacing `createCoreRouter` in `booking.js` with explicit route definitions to control matching order.
+
+#### Strapi Admin Configuration (Manual Steps Completed)
+- Authenticated role: enabled `create` on Booking, `createPaymentUrl`, `myBookings`
+- Public role: enabled `vnpayReturn` on Booking
+
+#### VNPay Sandbox Credentials
+- Terminal ID: `6UH2PIXS`
+- HashSecret: stored in `Travel_TVB_Server/.env`
+- Sandbox URL: `https://sandbox.vnpayment.vn/paymentv2/vpcpay.html`
+- Test card: NCB bank, number `9704198526191432198`, holder `NGUYEN VAN A`, date `07/15`, OTP `123456`
+- Admin portal: `https://sandbox.vnpayment.vn/merchantv2/`
+
+#### What Remains for Phase 3
+- **AI Chatbot (3.3):** RAG pipeline (LangChain + Google AI Studio + Pinecone), floating chat widget
 - **Blog improvements (3.5):** Suggested tours at bottom of posts
-- **Admin (3.4):** Order management view (REQ-ADMIN-03)
-- **User (3.6):** Order history page (REQ-AUTH-05)

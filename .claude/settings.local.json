@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(ls -la Travel_TVB/.env*)",
+      "Bash(grep -r \"chat\\\\|Chat\" Travel_TVB/src --include=*.jsx --include=*.js -l)",
+      "Bash(grep -r \"chat\\\\|Chat\" Travel_TVB_Server --include=*.js --include=*.json -l)",
+      "Bash(find Travel_TVB Travel_TVB_Server -maxdepth 2 -name .env* -o -name eslint* -o -name .eslint*)",
+      "Bash(find Travel_TVB_Server -maxdepth 2 -type f \\\\\\(-name jest.config.* -o -name vitest.config.* -o -name .babelrc* -o -name setupTests.* \\\\\\))",
+      "Bash(find Travel_TVB Travel_TVB_Server -maxdepth 3 -name *.test.* -o -name *.spec.*)",
+      "Bash(find Travel_TVB -name *.md -type f)",
+      "Bash(find Travel_TVB_Server -name *.md -type f)",
+      "Bash(find Travel_TVB_Server -maxdepth 2 -name *.test.* -o -name *.spec.*)",
+      "Bash(npm run:*)",
+      "Bash(node src/api/chatbot/scripts/indexTours.js)",
+      "Bash(node -e \"const pkg = require\\(''@google/generative-ai/package.json''\\); console.log\\(''SDK version:'', pkg.version\\);\")",
+      "Bash(node -e \":*)"
+    ]
+  }
+}

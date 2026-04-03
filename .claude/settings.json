@@ -1,0 +1,32 @@
+{
+    "env": {
+      "ANTHROPIC_BASE_URL": "https://chat.trollllm.xyz",
+      "ANTHROPIC_AUTH_TOKEN": "sk-trollllm-be6d8cec634528e20ec2bc7da9065ebb61bd4fef40c2c60f96571a5d815a2eef",
+      "ANTHROPIC_API_KEY": "",
+      "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4.6",
+      "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4.6",
+      "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4.5",
+      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+    },
+    "alwaysThinkingEnabled": true,
+    "permissions": {
+      "deny": [
+        "Bash(cat:*)",
+        "Bash(type:*)",
+        "Bash(more:*)",
+        "Bash(ssh:*)",
+        "Bash(scp:*)",
+        "Bash(sshpass:*)",
+        "Bash(curl:*)",
+        "Bash(wget:*)",
+        "Bash(net:*)",
+        "Bash(netsh:*)",
+        "Bash(powershell:*)",
+        "Bash(cmd:*)",
+        "Bash(reg:*)",
+        "Bash(wmic:*)",
+        "WebFetch",
+        "WebSearch"
+      ]
+    }
+  }

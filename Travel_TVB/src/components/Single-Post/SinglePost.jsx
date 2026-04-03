@@ -6,6 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import config from '../../config/strapi';
 import './SinglePost.css';
 import FallbackImage from './PostBackUp.png';
+import SuggestedTours from '../SuggestedTours/SuggestedTours';
 
 // --- Helper Components & Functions (Unchanged) ---
 
@@ -577,6 +578,9 @@ const SinglePost = ({ slug }) => {
             </div>
           </aside>
         </div>
+
+        {/* Suggested Tours - REQ-BLOG-05 */}
+        <SuggestedTours />
       </main>
     </div>
   );

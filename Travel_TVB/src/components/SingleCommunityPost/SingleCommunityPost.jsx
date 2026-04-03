@@ -6,6 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import config from '../../config/strapi';
 import '../Single-Post/SinglePost.css';
 import FallbackImage from './PostBackUp.png';
+import SuggestedTours from '../SuggestedTours/SuggestedTours';
 
 // --- Helper Components & Functions (No changes here) ---
 // ... (code for ClockIcon, PlayIcon, etc. is unchanged)
@@ -445,6 +446,9 @@ const SingleCommunityPost = ({ slug }) => {
                         </div>
                     </aside>
                 </div>
+
+                {/* Suggested Tours - REQ-BLOG-05 */}
+                <SuggestedTours />
             </main>
         </div>
     );
