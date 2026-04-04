@@ -12,7 +12,10 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -33,5 +36,8 @@
   "strapi": {
     "uuid": "a15c7fb9-349e-4def-801d-43085cc2ff15",
     "installId": "b5073ea4e03e3693d0efd9079c1e35770af4700921ea897f1259c59786945ebc"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
   }
 }

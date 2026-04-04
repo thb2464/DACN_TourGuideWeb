@@ -14,7 +14,13 @@
       "Bash(npm run:*)",
       "Bash(node src/api/chatbot/scripts/indexTours.js)",
       "Bash(node -e \"const pkg = require\\(''@google/generative-ai/package.json''\\); console.log\\(''SDK version:'', pkg.version\\);\")",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(find 'C:/stuff/sgu stuff/DACN/DACN_TourGuideWeb' -type f \\\\\\(-name *.test.* -o -name *.spec.* \\\\\\) ! -path */node_modules/*)",
+      "Bash(find 'C:/stuff/sgu stuff/DACN/DACN_TourGuideWeb' -name .github -o -name .gitlab-ci.yml -o -name .circleci -o -name *.workflow)",
+      "Bash(find 'C:/stuff/sgu stuff/DACN/DACN_TourGuideWeb' -maxdepth 1 -name Dockerfile* -o -name docker-compose*)",
+      "Bash(git:*)",
+      "Bash(npm test:*)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

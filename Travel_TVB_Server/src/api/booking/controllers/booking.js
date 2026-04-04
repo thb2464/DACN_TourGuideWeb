@@ -3,36 +3,7 @@
 const { createCoreController } = require('@strapi/strapi').factories;
 const crypto = require('crypto');
 const qs = require('qs');
-
-// VNPay's official sortObject — encodes keys AND values
-function sortObject(obj) {
-  let sorted = {};
-  let str = [];
-  let key;
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      str.push(encodeURIComponent(key));
-    }
-  }
-  str.sort();
-  for (key = 0; key < str.length; key++) {
-    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
-  }
-  return sorted;
-}
-
-function formatVnpDate(date) {
-  const d = date || new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  return (
-    d.getFullYear().toString() +
-    pad(d.getMonth() + 1) +
-    pad(d.getDate()) +
-    pad(d.getHours()) +
-    pad(d.getMinutes()) +
-    pad(d.getSeconds())
-  );
-}
+const { sortObject, formatVnpDate } = require('../utils/vnpay-helpers');
 
 module.exports = createCoreController('api::booking.booking', ({ strapi }) => ({
 
